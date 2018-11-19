@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MapDisplay from './components/MapDisplay';
+import SideBar from './components/SideBar';
 import './App.css';
 
 class App extends Component {
@@ -9,21 +10,30 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchLocData()
+    this.fetchLocationData()
   }
 
+  // Initialize Map by setting Map Center and adding Map Markers using Lat Lng
   initMap = () => {
-    const map = new window.google.maps.Map(document.getElementById('map'), {
+    let map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: 40.1672, lng: -105.1019},
       zoom: 13
     });
 
+    let infowindow = new window.google.maps.InfoWindow()
+
+    // Create Map Markers Dynamically using locations array
     this.state.locations.map(location => {
 
       let marker = new window.google.maps.Marker({
         position: {lat: location.pos.lat, lng: location.pos.lng},
         map: map,
         title: location.name
+      })
+
+      marker.addListener('click', function() {
+        infowindow.setContent(`${location.name}`)
+        infowindow.open(map, marker)
       })
     });
   }
@@ -33,7 +43,7 @@ class App extends Component {
     window.initMap = this.initMap
   }
 
-  fetchLocData = () => {
+  fetchLocationData = () => {
     fetch('https://api.myjson.com/bins/f948q')
     .then(response => response.json())
     .then(data =>
@@ -48,9 +58,10 @@ class App extends Component {
 
   render() {
     return (
-      <main>
-        <MapDisplay />
-      </main>
+      <div className="App">
+        <SideBar {...this.state} />
+        <MapDisplay {...this.state} />      
+      </div>
     );
   }
 }
