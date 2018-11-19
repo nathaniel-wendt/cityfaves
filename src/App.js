@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MapDisplay from './components/MapDisplay';
 import './App.css';
 
 class App extends Component {
@@ -48,7 +49,7 @@ class App extends Component {
   render() {
     return (
       <main>
-        <div id="map"></div>
+        <MapDisplay />
       </main>
     );
   }
